@@ -1,0 +1,153 @@
+{
+    "title": "SYNQ Video",
+    "description": "* [Sign up for a developer API key!](https://www.synq.fm/register)\n* [SYNQ API Guide](/)",
+    "docsUrl": "",
+    "url": "https://api.apis.guru/v2/specs/synq.fm/1.9.1/swagger.json",
+    "envVars": {},
+    "credentials": {
+        "fields": {
+            "server": {
+                "label": "Server",
+                "viewClass": "SelectView",
+                "model": [
+                    "https://api.synq.fm/v1",
+                    "--- Custom URL"
+                ],
+                "required": true
+            },
+            "otherServer": {
+                "label": "Custom Server URL",
+                "viewClass": "TextFieldView"
+            }
+        }
+    },
+    "triggers": {
+        "startFlow": {
+            "main": "./lib/triggers/startFlow.js",
+            "type": "polling",
+            "title": "Start Flow",
+            "fields": {}
+        }
+    },
+    "actions": {
+        "create": {
+            "main": "./lib/actions/create.js",
+            "title": "Create a new video, optionally setting some metadata fields.",
+            "description": "Create a new video, optionally setting some metadata fields. You may optionally set some of the metadata associated with the video. Only fields inside the \"userdata\" field can be set.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/create.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "details": {
+            "main": "./lib/actions/details.js",
+            "title": "Return details about a video.",
+            "description": "Return details about a video. You may optionally request that only some of the metadata fields are returned.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/details.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "query": {
+            "main": "./lib/actions/query.js",
+            "title": "Perform a JavaScript query to return video objects matching any desired criteria.",
+            "description": "Find videos matching any criteria, by running a JavaScript function over each video object. A detailed tutorial on how to use this functionality is available on the [documentation page](https://www.synq.fm/queries-video-api/).",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/query.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "stream": {
+            "main": "./lib/actions/stream.js",
+            "title": "Returns urls for streaming.",
+            "description": "Returns a stream url that you can stream to from your broadcasting software, and a playback url people can use to watch the stream.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/stream.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "update": {
+            "main": "./lib/actions/update.js",
+            "title": "Update a video's metadata.",
+            "description": "Update a video's metadata through JavaScript code. Only fields inside the \"userdata\" object can be set.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/update.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "upload": {
+            "main": "./lib/actions/upload.js",
+            "title": "Return parameters needed for uploading a video file.",
+            "description": "Return parameters needed for uploading a video file to Amazon Simple Storage Service. See http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-post-example.html as well as the language-specific code-examples.\n#### *Example request*\n```shell\ncurl -s https://api.synq.fm/v1/video/upload \\\n  -F api_key=${SYNQ_API_KEY} \\\n  -F video_id=2d81c30ce62f4dfdb501dbca96c7ae56\n```\n\n#### *Example response*\n```json\n{\n  \"action\": \"https://synqfm.s3.amazonaws.com/\",\n  \"AWSAccessKeyId\": \"AKIAIP77Y7MMX3ITZMFA\",\n  \"Content-Type\": \"video/mp4\",\n  \"Policy\": \"eyJleHBpcmF0aW9uIiA6ICIyMDE2LTA0LTIyVDE5OjAyOjI2LjE3MloiLCAiY29uZGl0aW9ucyIgOiBbeyJidWNrZXQiIDogInN5bnFmbSJ9LCB7ImFjbCIgOiAicHVibGljLXJlYWQifSwgWyJzdGFydHMtd2l0aCIsICIka2V5IiwgInByb2plY3RzLzZlLzYzLzZlNjNiNzUyYTE4NTRkZGU4ODViNWNjNDcyZWRmNTY5L3VwbG9hZHMvdmlkZW9zLzJkLzgxLzJkODFjMzBjZTYyZjRkZmRiNTAxZGJjYTk2YzdhZTU2Lm1wNCJdLCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidmlkZW8vbXA0Il0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDk5NTExNjI3Nzc2XV19\",\n  \"Signature\": \"ysqDemlKXKr6hKzVFP0hCGgf/cs=\",\n  \"acl\": \"public-read\",\n  \"key\": \"projects/6e/63/6e63b752a1854dde885b5cc472edf569/uploads/videos/2d/81/2d81c30ce62f4dfdb501dbca96c7ae56.mp4\"\n}\n```\n\nTo upload the file, you can then make a multipart POST request to the URL in `action`, and for all the other parameters returned, set them as form parameters.\n\nGiven the parameters above, you would upload a file `test.mp4` using cURL like this:\n\n```shell\ncurl -s https://synqfm.s3.amazonaws.com/ \\\n  -F AWSAccessKeyId=\"AKIAIP77Y7MMX3ITZMFA\" \\\n  -F Content-Type=\"video/mp4\" \\\n  -F Policy=\"eyJleHBpcmF0aW9uIiA6ICIyMDE2LTA0LTIyVDE5OjAyOjI2LjE3MloiLCAiY29uZGl0aW9ucyIgOiBbeyJidWNrZXQiIDogInN5bnFmbSJ9LCB7ImFjbCIgOiAicHVibGljLXJlYWQifSwgWyJzdGFydHMtd2l0aCIsICIka2V5IiwgInByb2plY3RzLzZlLzYzLzZlNjNiNzUyYTE4NTRkZGU4ODViNWNjNDcyZWRmNTY5L3VwbG9hZHMvdmlkZW9zLzJkLzgxLzJkODFjMzBjZTYyZjRkZmRiNTAxZGJjYTk2YzdhZTU2Lm1wNCJdLCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidmlkZW8vbXA0Il0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDk5NTExNjI3Nzc2XV19\" \\\n  -F Signature=\"ysqDemlKXKr6hKzVFP0hCGgf/cs=\" \\\n  -F acl=\"public-read\" \\\n  -F key=\"projects/6e/63/6e63b752a1854dde885b5cc472edf569/uploads/videos/2d/81/2d81c30ce62f4dfdb501dbca96c7ae56.mp4\" \\\n  -F file=\"@my_video_file.mp4\"\n```\n\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/upload.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "uploader": {
+            "main": "./lib/actions/uploader.js",
+            "title": "Return embeddable url to an uploader widget",
+            "description": "Returns an embeddable url, that contains an uploader widget that allows you to easily upload any mp4. Great way to simplify the uploading process for end users.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/uploader.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        }
+    }
+}

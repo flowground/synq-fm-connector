@@ -1,0 +1,20 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                },
+                "video_id": {
+                    "description": "The ID of the video you want to stream to. The video needs to have been previously created.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "api_key"
+            ]
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                },
+                "video_id": {
+                    "description": "The ID of the video you are going to upload into. The video needs to have been previously created.",
+                    "type": "string"
+                },
+                "timeout": {
+                    "description": "How long the uploader widget works for. Anything from '30 minutes' to '2 days'.",
+                    "type": "string",
+                    "default": "2 hours"
+                }
+            },
+            "required": [
+                "api_key"
+            ]
+        }
+    }
+}
